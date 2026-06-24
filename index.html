@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexora Systems — Building intelligent systems</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EDF1F2;
+    --paper-alt:#E2E8EA;
+    --card:#F7FAFA;
+    --ink:#11243B;
+    --ink-soft:#4C5F73;
+    --signal:#E8651F;
+    --signal-strong:#C9530F;
+    --teal:#2F6F6B;
+    --teal-soft:#DCE9E8;
+    --line:#C7D2D6;
+    --radius:2px;
+    --maxw:1180px;
+    --shadow:0 1px 0 rgba(17,36,59,0.06);
+  }
+  [data-theme="dark"]{
+    --paper:#0D1620;
+    --paper-alt:#11202E;
+    --card:#142331;
+    --ink:#E7EDF0;
+    --ink-soft:#92A6B5;
+    --signal:#FF8A47;
+    --signal-strong:#FFA268;
+    --teal:#5BB3AB;
+    --teal-soft:#16302D;
+    --line:#233244;
+    --shadow:0 1px 0 rgba(0,0,0,0.3);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:16px;
+    line-height:1.6;
+    transition:background .3s ease, color .3s ease;
+  }
+  h1,h2,h3,h4{
+    font-family:'Space Grotesk', sans-serif;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  .mono{
+    font-family:'IBM Plex Mono', monospace;
+    letter-spacing:0.02em;
+  }
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px;}
+  img,svg{display:block;}
+
+  /* ===== Reveal-on-scroll ===== */
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease, transform .6s ease;}
+  .reveal.in{opacity:1;transform:translateY(0);}
+  @media (prefers-reduced-motion: reduce){
+    .reveal{opacity:1;transform:none;transition:none;}
+    html{scroll-behavior:auto;}
+  }
+
+  /* ===== Header ===== */
+  header.site{
+    position:sticky;top:0;z-index:50;
+    background:color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-row{
+    display:flex;align-items:center;justify-content:space-between;
+    height:68px;
+  }
+  .logo{
+    display:flex;align-items:baseline;gap:8px;
+    font-weight:600;font-size:1.15rem;
+  }
+  .logo .mark{
+    width:9px;height:9px;background:var(--signal);
+    display:inline-block;border-radius:50%;
+    transform:translateY(-1px);
+  }
+  .logo .sub{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.65rem;color:var(--ink-soft);
+    letter-spacing:0.08em;
+  }
+  nav.primary ul{
+    display:flex;gap:28px;list-style:none;margin:0;padding:0;
+  }
+  nav.primary a{
+    font-size:0.85rem;font-weight:500;color:var(--ink-soft);
+    padding:6px 0;position:relative;
+    transition:color .2s ease;
+  }
+  nav.primary a:hover, nav.primary a:focus-visible{color:var(--ink);}
+  nav.primary a::after{
+    content:"";position:absolute;left:0;bottom:0;height:2px;width:0;
+    background:var(--signal);transition:width .25s ease;
+  }
+  nav.primary a:hover::after, nav.primary a:focus-visible::after{width:100%;}
+  .nav-right{display:flex;align-items:center;gap:14px;}
+  .theme-toggle{
+    border:1px solid var(--line);background:var(--card);color:var(--ink);
+    width:34px;height:34px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;font-size:0.9rem;
+  }
+  .theme-toggle:focus-visible, a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible{
+    outline:2px solid var(--signal);outline-offset:2px;
+  }
+  .menu-btn{display:none;background:none;border:1px solid var(--line);color:var(--ink);width:34px;height:34px;cursor:pointer;}
+  @media (max-width:840px){
+    nav.primary{
+      position:absolute;top:68px;left:0;right:0;
+      background:var(--paper);border-bottom:1px solid var(--line);
+      max-height:0;overflow:hidden;transition:max-height .3s ease;
+    }
+    nav.primary.open{max-height:300px;}
+    nav.primary ul{flex-direction:column;gap:0;padding:8px 28px 18px;}
+    nav.primary li{border-top:1px solid var(--line);}
+    nav.primary a{display:block;padding:14px 0;}
+    .menu-btn{display:flex;align-items:center;justify-content:center;}
+  }
+
+  /* ===== Status pills ===== */
+  .pill{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.68rem;letter-spacing:0.06em;
+    padding:3px 9px;border-radius:20px;
+    display:inline-flex;align-items:center;gap:5px;
+    white-space:nowrap;
+  }
+  .pill.dev{background:var(--teal-soft);color:var(--teal);}
+  .pill.concept{border:1px solid var(--line);color:var(--ink-soft);}
+  .pill.reserved{border:1px dashed var(--line);color:var(--ink-soft);}
+  .pill .dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
+
+  /* ===== Section scaffolding ===== */
+  section{padding:96px 0;border-bottom:1px solid var(--line);}
+  section:last-of-type{border-bottom:none;}
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;color:var(--signal);
+    letter-spacing:0.12em;text-transform:uppercase;
+    display:flex;align-items:center;gap:10px;margin-bottom:16px;
+  }
+  .eyebrow::before{content:"";width:18px;height:1px;background:var(--signal);}
+
+  /* ===== Hero ===== */
+  .hero{
+    padding-top:64px;padding-bottom:80px;
+    background:
+      linear-gradient(var(--line) 1px, transparent 1px) 0 0/100% 38px,
+      linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0/72px 100%;
+    background-color:var(--paper);
+    background-blend-mode:normal;
+    position:relative;
+  }
+  [data-theme="dark"] .hero{opacity:1;}
+  .hero-inner{position:relative;}
+  .hero h1{
+    font-size:clamp(2.2rem, 5.4vw, 4rem);
+    font-weight:700;line-height:1.04;max-width:760px;
+  }
+  .hero h1 .accent{color:var(--signal);}
+  .hero .slogan{
+    margin-top:22px;font-size:1.15rem;color:var(--ink-soft);
+    max-width:560px;font-weight:400;
+  }
+  .cta-row{display:flex;gap:14px;margin-top:36px;flex-wrap:wrap;}
+  .btn{
+    font-family:'IBM Plex Mono', monospace;font-size:0.82rem;
+    padding:13px 22px;border-radius:var(--radius);
+    letter-spacing:0.03em;cursor:pointer;border:1px solid transparent;
+    transition:transform .15s ease, background .2s ease, color .2s ease, border-color .2s ease;
+    display:inline-flex;align-items:center;gap:8px;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn-primary{background:var(--signal);color:#fff;}
+  .btn-primary:hover{background:var(--signal-strong);}
+  .btn-ghost{border-color:var(--ink);color:var(--ink);background:transparent;}
+  .btn-ghost:hover{background:var(--ink);color:var(--paper);}
+
+  .readout{
+    margin-top:64px;display:grid;grid-template-columns:repeat(4,1fr);
+    border:1px solid var(--line);background:var(--card);
+  }
+  .readout .cell{padding:18px 20px;border-right:1px solid var(--line);}
+  .readout .cell:last-child{border-right:none;}
+  .readout .cell .num{font-family:'Space Grotesk';font-size:1.6rem;font-weight:600;}
+  .readout .cell .lbl{font-family:'IBM Plex Mono';font-size:0.65rem;color:var(--ink-soft);letter-spacing:0.05em;margin-top:4px;}
+  @media (max-width:760px){
+    .readout{grid-template-columns:repeat(2,1fr);}
+    .readout .cell:nth-child(2){border-right:none;}
+    .readout .cell:nth-child(1),.readout .cell:nth-child(2){border-bottom:1px solid var(--line);}
+  }
+
+  /* ===== About ===== */
+  .about-grid{display:grid;grid-template-columns:0.9fr 1.1fr;gap:64px;align-items:start;}
+  @media (max-width:840px){.about-grid{grid-template-columns:1fr;gap:36px;}}
+  .about-grid h2{font-size:2rem;max-width:380px;}
+  .pillars{display:grid;gap:22px;}
+  .pillar{padding:22px 0;border-top:1px solid var(--line);}
+  .pillar:first-child{border-top:none;}
+  .pillar .tag{font-family:'IBM Plex Mono';font-size:0.68rem;color:var(--teal);letter-spacing:0.08em;}
+  .pillar h3{font-size:1.1rem;margin-top:6px;}
+  .pillar p{color:var(--ink-soft);margin-top:8px;max-width:520px;}
+
+  .aibi{
+    margin-top:48px;border:1px solid var(--line);background:var(--card);
+    padding:28px;display:grid;grid-template-columns:1fr 1px 1fr;gap:28px;
+  }
+  .aibi .div{background:var(--line);}
+  .aibi h4{font-family:'IBM Plex Mono';font-size:0.78rem;color:var(--signal);letter-spacing:0.06em;}
+  .aibi p{color:var(--ink-soft);margin-top:10px;font-size:0.95rem;}
+  @media (max-width:700px){.aibi{grid-template-columns:1fr;}.aibi .div{display:none;}}
+
+  /* ===== Projects ===== */
+  .proj-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:36px;}
+  .search-wrap{position:relative;}
+  .search-wrap input{
+    font-family:'IBM Plex Mono';font-size:0.82rem;
+    background:var(--card);border:1px solid var(--line);color:var(--ink);
+    padding:11px 14px 11px 34px;width:240px;border-radius:var(--radius);
+  }
+  .search-wrap input::placeholder{color:var(--ink-soft);}
+  .search-wrap .ic{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--ink-soft);font-size:0.85rem;}
+
+  .proj-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);}
+  @media (max-width:980px){.proj-grid{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:620px){.proj-grid{grid-template-columns:1fr;}}
+  .proj-card{
+    background:var(--card);padding:26px;display:flex;flex-direction:column;gap:14px;
+    transition:background .2s ease;min-height:220px;
+  }
+  .proj-card:hover{background:var(--paper-alt);}
+  .proj-card .id-row{display:flex;justify-content:space-between;align-items:center;}
+  .proj-card .id{font-family:'IBM Plex Mono';font-size:0.72rem;color:var(--ink-soft);letter-spacing:0.06em;}
+  .proj-card h3{font-size:1.25rem;margin-top:2px;}
+  .proj-card p{color:var(--ink-soft);font-size:0.9rem;flex-grow:1;}
+  .proj-card .tagline{font-size:0.78rem;color:var(--teal);font-style:italic;}
+  .proj-card.hidden{display:none;}
+  .no-results{padding:40px 0;text-align:center;color:var(--ink-soft);font-family:'IBM Plex Mono';font-size:0.85rem;display:none;}
+
+  /* ===== Innovations ===== */
+  .labs-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:40px;}
+  @media (max-width:760px){.labs-grid{grid-template-columns:1fr;}}
+  .lab-card{background:var(--card);padding:30px;}
+  .lab-card .lab-num{font-family:'IBM Plex Mono';font-size:0.7rem;color:var(--signal);}
+  .lab-card h3{margin-top:10px;font-size:1.15rem;}
+  .lab-card p{margin-top:10px;color:var(--ink-soft);font-size:0.92rem;}
+
+  /* ===== Updates ===== */
+  .update-row{
+    display:grid;grid-template-columns:120px 1fr;gap:24px;
+    padding:26px 0;border-top:1px solid var(--line);
+  }
+  .update-row:first-of-type{border-top:none;}
+  .update-row .date{font-family:'IBM Plex Mono';font-size:0.78rem;color:var(--ink-soft);}
+  .update-row h3{font-size:1.05rem;}
+  .update-row p{color:var(--ink-soft);margin-top:6px;font-size:0.92rem;max-width:620px;}
+  .update-row .kind{font-family:'IBM Plex Mono';font-size:0.65rem;color:var(--teal);letter-spacing:0.05em;display:block;margin-bottom:4px;}
+  @media (max-width:600px){.update-row{grid-template-columns:1fr;gap:6px;}}
+
+  /* ===== Contact ===== */
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;}
+  @media (max-width:840px){.contact-grid{grid-template-columns:1fr;gap:40px;}}
+  .field{margin-bottom:18px;}
+  .field label{
+    display:block;font-family:'IBM Plex Mono';font-size:0.7rem;
+    color:var(--ink-soft);letter-spacing:0.05em;margin-bottom:7px;
+  }
+  .field input, .field textarea{
+    width:100%;background:var(--card);border:1px solid var(--line);
+    color:var(--ink);padding:12px 14px;font-family:'IBM Plex Sans';font-size:0.95rem;
+    border-radius:var(--radius);
+  }
+  .field textarea{min-height:120px;resize:vertical;}
+  .contact-side .row{display:flex;gap:14px;align-items:flex-start;padding:16px 0;border-top:1px solid var(--line);}
+  .contact-side .row:first-child{border-top:none;}
+  .contact-side .lbl{font-family:'IBM Plex Mono';font-size:0.68rem;color:var(--ink-soft);min-width:90px;}
+  .social-links{display:flex;gap:10px;flex-wrap:wrap;}
+  .social-links a{
+    border:1px solid var(--line);padding:7px 14px;font-family:'IBM Plex Mono';
+    font-size:0.78rem;border-radius:20px;transition:background .2s ease, color .2s ease;
+  }
+  .social-links a:hover{background:var(--ink);color:var(--paper);}
+  .form-msg{margin-top:14px;font-family:'IBM Plex Mono';font-size:0.8rem;color:var(--teal);display:none;}
+
+  /* ===== Footer ===== */
+  footer{background:var(--paper-alt);padding:56px 0 30px;}
+  .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:32px;}
+  @media (max-width:760px){.foot-grid{grid-template-columns:1fr 1fr;}}
+  .foot-grid h4{font-family:'IBM Plex Mono';font-size:0.7rem;letter-spacing:0.06em;color:var(--ink-soft);margin-bottom:14px;}
+  .foot-grid ul{list-style:none;padding:0;margin:0;display:grid;gap:10px;}
+  .foot-grid a{font-size:0.88rem;color:var(--ink-soft);}
+  .foot-grid a:hover{color:var(--ink);}
+  .foot-bottom{
+    margin-top:48px;padding-top:24px;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
+    font-family:'IBM Plex Mono';font-size:0.72rem;color:var(--ink-soft);
+  }
+</style>
+</head>
+<body data-theme="light">
+
+<header class="site">
+  <div class="wrap nav-row">
+    <a href="#home" class="logo"><span class="mark"></span>NEXORA<span class="sub">SYSTEMS</span></a>
+    <nav class="primary" id="primaryNav">
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#innovations">Innovations</a></li>
+        <li><a href="#updates">Updates</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle theme">◐</button>
+      <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- ===== HOME ===== -->
+<section class="hero" id="home">
+  <div class="wrap hero-inner">
+    <p class="eyebrow mono">Nexora Systems</p>
+    <h1>We build the systems that <span class="accent">think alongside you.</span></h1>
+    <p class="slogan">Nexora designs connected products where artificial intelligence and business intelligence work as one layer — reasoning with your data, not just storing it.</p>
+    <div class="cta-row">
+      <a href="#projects" class="btn btn-primary">View our systems →</a>
+      <a href="#contact" class="btn btn-ghost">Get in touch</a>
+    </div>
+
+    <div class="readout reveal">
+      <div class="cell"><div class="num">5</div><div class="lbl mono">ACTIVE SYSTEMS</div></div>
+      <div class="cell"><div class="num">2026</div><div class="lbl mono">FOUNDED</div></div>
+      <div class="cell"><div class="num">AI+BI</div><div class="lbl mono">CORE LAYER</div></div>
+      <div class="cell"><div class="num">01</div><div class="lbl mono">VISION ITERATION</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section id="about">
+  <div class="wrap about-grid">
+    <div class="reveal">
+      <p class="eyebrow mono">About Nexora</p>
+      <h2>A small systems company with a wide blueprint.</h2>
+      <p style="margin-top:18px;color:var(--ink-soft);max-width:380px;">Nexora Systems isn't one product — it's the company behind a family of intelligent tools, each built on the same underlying belief: software should reason, not just record.</p>
+    </div>
+    <div class="pillars reveal">
+      <div class="pillar">
+        <span class="tag mono">VISION</span>
+        <h3>Every tool should get smarter the more it's used.</h3>
+        <p>We're working toward a future where the apps people rely on daily — for budgeting, health, security, learning, connection — quietly apply intelligence in the background instead of asking people to think like a database.</p>
+      </div>
+      <div class="pillar">
+        <span class="tag mono">MISSION</span>
+        <h3>Build a connected suite, not a pile of separate apps.</h3>
+        <p>Each Nexora system is built independently, but designed to eventually share a common intelligence layer — so insight in one product can inform another.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="aibi reveal">
+      <div>
+        <h4 class="mono">AI — ARTIFICIAL INTELLIGENCE</h4>
+        <p>The reasoning layer. Pattern recognition, prediction, and natural-language interaction woven directly into each product's core workflows — not bolted on as a chatbot afterthought.</p>
+      </div>
+      <div class="div"></div>
+      <div>
+        <h4 class="mono">BI — BUSINESS INTELLIGENCE</h4>
+        <p>The clarity layer. Every Nexora system surfaces its own data back to the people using it — trends, summaries, and analytics that turn raw activity into a decision you can act on.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROJECTS ===== -->
+<section id="projects">
+  <div class="wrap">
+    <div class="proj-head reveal">
+      <div>
+        <p class="eyebrow mono">Projects</p>
+        <h2 style="font-size:2rem;">The systems in motion.</h2>
+      </div>
+      <div class="search-wrap">
+        <span class="ic">⌕</span>
+        <input type="text" id="projectSearch" placeholder="Filter systems…" aria-label="Filter projects">
+      </div>
+    </div>
+
+    <div class="proj-grid reveal" id="projectGrid">
+      <article class="proj-card" data-name="safeguard security protection">
+        <div class="id-row"><span class="id mono">N-01 · SAFEGUARD</span><span class="pill dev"><span class="dot"></span>IN DEVELOPMENT</span></div>
+        <h3>SafeGuard</h3>
+        <p>Protective intelligence built to watch for risk patterns automatically, so safety isn't something people have to remember to check on.</p>
+        <span class="tagline">Watching the systems you can't watch yourself.</span>
+      </article>
+
+      <article class="proj-card" data-name="platlink social discovery smart links creators">
+        <div class="id-row"><span class="id mono">N-02 · PLATLINK</span><span class="pill dev"><span class="dot"></span>IN DEVELOPMENT</span></div>
+        <h3>Platlink</h3>
+        <p>A social discovery and smart-link platform for creators and businesses — one shareable page with a feed, profile, and built-in link analytics.</p>
+        <span class="tagline">One link, every audience.</span>
+      </article>
+
+      <article class="proj-card" data-name="smart budget app finance money">
+        <div class="id-row"><span class="id mono">N-03 · SMART BUDGET</span><span class="pill concept">CONCEPT</span></div>
+        <h3>Smart Budget App</h3>
+        <p>A budgeting tool that reasons about spending patterns instead of just logging transactions — built to explain money, not just track it.</p>
+        <span class="tagline">Budgeting that thinks with you.</span>
+      </article>
+
+      <article class="proj-card" data-name="skill app learning teaching marketplace">
+        <div class="id-row"><span class="id mono">N-04 · SKILL APP</span><span class="pill concept">CONCEPT</span></div>
+        <h3>Skill App</h3>
+        <p>A marketplace where people teach, learn, and track skills — matching learners with mentors and progress with proof.</p>
+        <span class="tagline">Where ability becomes visible.</span>
+      </article>
+
+      <article class="proj-card" data-name="smart health assistant wellness medical">
+        <div class="id-row"><span class="id mono">N-05 · SMART HEALTH</span><span class="pill concept">CONCEPT</span></div>
+        <h3>Smart Health Assistant</h3>
+        <p>A health companion designed to listen carefully and surface patterns over time — built to support good decisions, not replace a doctor.</p>
+        <span 
